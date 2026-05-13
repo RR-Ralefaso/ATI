@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 
 class AudioMapper{
 
@@ -26,8 +27,11 @@ class AudioMapper{
     }
 
 
+    //get the song length in length
+    int GetLength(){
+        
+    }
 
-    
     // euqation : Ps = total width of screen (pixels) / total length of song (seconds)
     int GetPixelsPerSecond(){
         if (GetWidth() == 0)
