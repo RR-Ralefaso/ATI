@@ -63,7 +63,6 @@ class AudioMapper{
     }
 
     // euqation : Ps = total width of screen (pixels) / total length of song (seconds)
-    // Change return type to double for precision
     double GetPixelsPerSecond()
     {
         int width = GetWidth();
@@ -87,4 +86,6 @@ class AudioMapper{
         // Equation: Ps = total width / total length
         return static_cast<double>(width) / songLength;
     }
+
+
 };
