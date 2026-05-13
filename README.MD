@@ -1,10 +1,7 @@
-TO RUN :
-
-    rm -rf build #if build exists
-    cmake -B build
-    cd build
-    cmake ..
-    cmake --build .
-    cmake run
-
-
+compiling Equations:
+--------------------
+    g++ -c Equations.cpp -o Equations`sdl2-config --cflags` -lSDL2 -lSDL2_mixer
+    
+Compiling main :
+----------------
+    g++ Main.cpp -o main
