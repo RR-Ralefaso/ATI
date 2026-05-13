@@ -1,9 +1,6 @@
 TO RUN :
-
-    mkdir build && cd build
-    cmake ..
-    make
-    make run
-
-
+    cd ATI
+    rm -rf build
+    cmake -B build
+    cmake --build build --target run
 
