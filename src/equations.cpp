@@ -1,19 +1,26 @@
 #include <iostream>
+#include <string>
 #include <cmath>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 
 class AudioMapper{
 
-    //gets the screen width
-    int GetWidth(){
-        SDL_DisplayMode dm;
-        if (SDL_GetCurrentDisplayMode(0, &dm) == 0) // SDL_GetCurrentDisplayMode returns 0 on success
+
+    public:
+        //path of the file
+        std::string filepath;
+
+        // gets the screen width
+        int GetWidth()
         {
-            return dm.w;
+            SDL_DisplayMode dm;
+            if (SDL_GetCurrentDisplayMode(0, &dm) == 0) // SDL_GetCurrentDisplayMode returns 0 on success
+            {
+                return dm.w;
+            }
+            return EXIT_FAILURE;
         }
-        return EXIT_FAILURE;
-    }
 
     //get screen height
     int GetHeight(){
@@ -28,21 +35,56 @@ class AudioMapper{
 
 
     //get the song length in length
-    int GetLength(){
-        
+    double GetLength(const std::string &filepath)
+    {
+        // Initialize SDL_mixer (Frequency, Format, Channels, Chunksize)
+        if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+        {
+            std::cerr << "SDL_mixer could not initialize! Error: " << Mix_GetError() << std::endl;
+            return -1.0;
+        }
+
+        Mix_Music *music = Mix_LoadMUS(filepath.c_str());
+        if (!music)
+        {
+            std::cerr << "Failed to load music! Error: " << Mix_GetError() << std::endl;
+            Mix_CloseAudio();
+            return -1.0;
+        }
+
+        // Get length in seconds
+        double duration = Mix_MusicDuration(music);
+
+        // Clean up
+        Mix_FreeMusic(music);
+        Mix_CloseAudio();
+
+        return duration;
     }
 
     // euqation : Ps = total width of screen (pixels) / total length of song (seconds)
-    int GetPixelsPerSecond(){
-        if (GetWidth() == 0)
+    // Change return type to double for precision
+    double GetPixelsPerSecond()
+    {
+        int width = GetWidth();
+
+        if (width <= 0)
         {
-            std::cerr << "width of screen detected to be 0" << std::endl; //output will be 0
-            return EXIT_FAILURE;
+            std::cerr << "Error: Width of screen is 0 or negative." << std::endl;
+            return 0.0;
         }
-        if (GetLength()==0){ //divison by 0
-            std::cerr << "song length is 0";
-            exit;
+
+        // Call GetLength once and store it to save CPU/Disk usage
+        double songLength = GetLength(filepath);
+
+        if (songLength <= 0)
+        {
+            std::cerr << "Error: Song length is 0 or file could not be read." << std::endl;
+            // Return 0 instead of 'exit' to keep the program running
+            return 0.0;
         }
-        return (GetWidth() / GetLength());
+
+        // Equation: Ps = total width / total length
+        return static_cast<double>(width) / songLength;
     }
 };
