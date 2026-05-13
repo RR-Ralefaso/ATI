@@ -1,8 +1,5 @@
-#include <iostream>
-#include <string>
+#include "Equations.hpp"
 #include <cmath>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_mixer.h>
 
 class AudioMapper{
 
