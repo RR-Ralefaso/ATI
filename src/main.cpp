@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cstdlib>
-
+#include "Equations.hpp" //the equations ima use
 int main()
 {
     std::cout << "this program is used to take in audio (file/live) and convert it into frquencies then create an image based of each frequency. \n\n"
