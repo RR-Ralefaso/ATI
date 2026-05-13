@@ -1,0 +1,7 @@
+#ignoring config folders
+.vscode
+
+#ignore any files in build folder
+/build
+
+
