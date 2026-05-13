@@ -25,13 +25,20 @@ class AudioMapper{
         return EXIT_FAILURE;
     }
 
+
+
     
-
-
-
-
-
-
-
-
+    // euqation : Ps = total width of screen (pixels) / total length of song (seconds)
+    int GetPixelsPerSecond(){
+        if (GetWidth() == 0)
+        {
+            std::cerr << "width of screen detected to be 0" << std::endl; //output will be 0
+            return EXIT_FAILURE;
+        }
+        if (GetLength()==0){ //divison by 0
+            std::cerr << "song length is 0";
+            exit;
+        }
+        return (GetWidth() / GetLength());
+    }
 };
