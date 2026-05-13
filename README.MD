@@ -1,6 +1,10 @@
 TO RUN :
-    cd ATI
-    rm -rf build
+
+    rm -rf build #if build exists
     cmake -B build
-    cmake --build build --target run
+    cd build
+    cmake ..
+    cmake --build .
+    cmake run
+
 
