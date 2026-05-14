@@ -1,20 +1,20 @@
 #include <iostream>
 #include <cstdlib>
-#include "src/Equations.hpp" //the equations ima use
+#include <vector>
+#include <algorithm>
+#include <cctype>
+#include "src/Equations.hpp" // The equations you'll use
+
 using namespace ATI;
-#include <algorithm> 
-#include <cctype>   
 
 /*
 @author : Rothang Ralph Ralefaso
 @email : rrralefaso@outloook.com
 @github : github.com/RR-Ralefaso
 @date : 2026
-
 */
 
-
-//executing commands function
+// Function to execute system commands
 int ExecuteCommands(const char *command)
 {
     std::cout << "Executing Command... \n"
@@ -33,11 +33,7 @@ int ExecuteCommands(const char *command)
     }
 }
 
-
-
-
-
-//tolowercase function
+// Function to convert string to lowercase
 std::string toLowerCase(std::string data)
 {
     std::transform(data.begin(), data.end(), data.begin(),
@@ -46,68 +42,98 @@ std::string toLowerCase(std::string data)
     return data;
 }
 
-
-
 int main()
 {
-    std::cout << "this program is used to take in audio (file/live) and convert it into frquencies then create an image based of each frequency. \n\n"
-              << "using the TOTAL DETAIL equation :\n    Total pixels = (L * Ps) * H \n"
+    std::cout << "This program is used to take in audio (file/live) and convert it into frequencies \n"
+              << "then create an image based on each frequency. \n\n"
+              << "Using the TOTAL DETAIL equation:\n"
+              << "    Total pixels = (L * Ps) * H \n"
               << "       -> L  = length of song (seconds)\n"
-              << "       -> Ps = Pixels per second (yours tretch factor)\n"
-              << "       -> H  = Height"
-              <<"\n\n"
-              <<"        ->Ps = total width of screen (pixels) / total length of song (seconds)\n\n"
+              << "       -> Ps = Pixels per second (your stretch factor)\n"
+              << "       -> H  = Height\n\n"
+              << "       -> Ps = total width of screen (pixels) / total length of song (seconds)\n\n"
               << std::endl;
 
     Audiomapper mapper;
 
-    //executing commands to build the equations
+    // Compile external dependencies if necessary
     const char *command = "g++ -c src/Equations.cpp -o build/Equations.o $(sdl2-config --cflags) -lfftw3";
-    if(ExecuteCommands(command) == EXIT_FAILURE){
-        std::cerr << "failed to create the object file\n" << std::endl;
-        exit;
+    if (ExecuteCommands(command) == EXIT_FAILURE)
+    {
+        std::cerr << "Failed to create the object file. Check your compiler and paths." << std::endl;
+        return EXIT_FAILURE;
     }
-    std::cout << "created build file successfully\n"
+    std::cout << "Created build file successfully\n"
               << std::endl;
 
-
-
-    // starting off by asking user if they want live audio or not
-    std::cout << "would you like to upload a file or live recording:\n"<< std::endl;
+    // User input for mode selection
+    std::cout << "Would you like to upload a file or live recording:\n"
+              << std::endl;
     std::string response;
-    //taking in user inout with validation
-    do{
+
+    do
+    {
         std::cout << "   for Live input [L]\n   for uploading input [U]" << std::endl;
-        getline(std::cin, response);
-        response = toLowerCase(response); 
+        if (!std::getline(std::cin, response))
+            return EXIT_FAILURE;
+        response = toLowerCase(response);
     } while (response.empty() || (response != "l" && response != "u"));
 
-    
-
-
-    /*==============================actual logic================================*/
+    /*============================== actual logic ================================*/
 
     std::string filepath;
 
     switch (response[0])
     {
-        case 'l':
-                break;
+    case 'l':
+        std::cout << "Live recording mode selected (Implementation pending...)" << std::endl;
+        break;
 
-        case 'u':
-        //get file location ensure it isnt empty
-            do
-            {
-                std::cout << "\n\nwhat is the location of the audio file (use absolute path)\n"
-                          << std::endl;
-                getline(std::cin, filepath);
-            } while (filepath.empty());
-            mapper.filepath = filepath;
-            
+    case 'u':
+    {
+        // 1. Get file location
+        do
+        {
+            std::cout << "\nWhat is the location of the audio file? (Use absolute path): " << std::endl;
+            std::getline(std::cin, filepath);
+        } while (filepath.empty());
 
-            break;
-        default :
-            exit;
+        mapper.filepath = filepath;
+
+        // 2. Extract metadata and process frequencies
+        // Note: Storing values in variables to avoid repeated heavy function calls
+        double length = mapper.GetLength(filepath);
+        double Ps = mapper.GetPixelsPerSecond(filepath);
+        int width = mapper.GetWidth();
+        int height = mapper.GetHeight();
+        double totalPixels = mapper.GetTotalPixels(filepath);
+
+        // Getting the Frequency Map (Assuming Fm is a vector of doubles or similar)
+        auto Fm = mapper.GetFrequencyMap(filepath);
+
+        std::cout << "\nFile Info:\n"
+                  << " - Length: " << length << "s\n"
+                  << " - Width: " << width << "px\n"
+                  << " - Height: " << height << "px\n"
+                  << " - Total Pixels: " << totalPixels << "\n"
+                  << std::endl;
+
+        // 3. Save location
+        std::string savepath;
+        do
+        {
+            std::cout << "Where would you like to save the output image? (Absolute path): " << std::endl;
+            std::getline(std::cin, savepath);
+        } while (savepath.empty());
+
+        // 4. Generate the result
+        mapper.CreateSpectrogram(Fm, width, height, savepath);
+        std::cout << "Spectrogram saved to: " << savepath << std::endl;
+    }
+    break;
+
+    default:
+        return EXIT_FAILURE;
     }
 
     return EXIT_SUCCESS;
