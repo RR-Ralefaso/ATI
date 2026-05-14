@@ -9,15 +9,17 @@
 namespace ATI{
     class Audiomapper{
 
-        std::string filepath; //path to file
+        public:
 
-        //functions declarations
-        int GetWidth();
-        int GetHeight();
-        
-        double GetLength(const std::string &filepath);
-        double GetPixelsPerSecond(std::string &filepath);
-        double GetTotalPixels(const std::string &filepath);
+            std::string filepath; //path to file
+            //functions declarations
+            int GetWidth();
+            int GetHeight();
+            
+            double GetLength(const std::string &filepath);
+            double GetPixelsPerSecond(std::string &filepath);
+            double GetTotalPixels(const std::string &filepath);
+
         
     };
 } // namespace for ATI
