@@ -14,8 +14,11 @@ namespace ATI{
         //functions declarations
         int GetWidth();
         int GetHeight();
+        
         double GetLength(const std::string &filepath);
-        double GetPixelsPerSecond();
+        double GetPixelsPerSecond(std::string &filepath);
+        double GetTotalPixels(const std::string &filepath);
+        
     };
 } // namespace for ATI
 #endif
