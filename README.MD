@@ -1,6 +1,6 @@
 compiling Equations:
 --------------------
-    g++ -c src/Equations.cpp -o build/Equations.o $(sdl2-config --cflags)
+    g++ -c src/Equations.cpp -o build/Equations.o $(sdl2-config --cflags) -lfftw3
         
 Compiling app :
 ----------------
@@ -8,4 +8,4 @@ Compiling app :
 
 Linking them :
 --------------
-    g++ build/app.o build/Equations.o -o ATI $(sdl2-config --libs) -lSDL2_mixer
+    g++ build/app.o build/Equations.o -o ATI $(sdl2-config --libs) -lSDL2_mixer -lfftw3
