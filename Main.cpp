@@ -21,7 +21,7 @@ int main()
     std::string response;
     //taking in user inout with validation
     do{
-        std::cout << "   for Live input [L]\n    for uploading input [u]" << std::endl;
+        std::cout << "   for Live input [L]\n   for uploading input [u]" << std::endl;
         getline(std::cin, response);
     } while (response.empty());
 
