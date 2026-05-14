@@ -1,6 +1,10 @@
 #ignoring config folders
 .vscode
 
+
+#ignore build folder
+/build
+
 #files to ingnore
 *.o
 app
