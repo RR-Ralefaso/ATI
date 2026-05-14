@@ -34,10 +34,12 @@ namespace ATI
 
         // Path to audio file
         std::string filepath;
-
+        std::string outputFilename;
+        
         // --- Screen & Dimension Helpers ---
         int GetWidth();
         int GetHeight();
+        int imgWidth, imgHeight;
 
         // --- Audio Metadata ---
         double GetLength(const std::string &filepath);
@@ -53,10 +55,14 @@ namespace ATI
          */
         std::vector<FrequencyPoint> GetFrequencyMap(const std::string &filepath);
 
-    private:
-        // Adding a private helper for internal calculations is often useful
-        // e.g., double sampleRate = 44100.0;
+
+        //creating image
+        void CreateSpectrogram(const std::vector<FrequencyPoint> &freqMap, int imgWidth, int imgHeight, const std::string &outputFilename);
+        // private:
+        //     // Adding a private helper for internal calculations is often useful
+        //     // e.g., double sampleRate = 44100.0;
     };
+
 
 } // namespace ATI
 
