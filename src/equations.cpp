@@ -46,7 +46,7 @@ class AudioMapper{
         {
             std::cerr << "Failed to load music! Error: " << Mix_GetError() << std::endl;
             Mix_CloseAudio();
-            return -1.0;
+            return (double)EXIT_FAILURE;
         }
 
         // Get length in seconds
@@ -60,7 +60,7 @@ class AudioMapper{
     }
 
     // euqation : Ps = total width of screen (pixels) / total length of song (seconds)
-    double GetPixelsPerSecond()
+    double GetPixelsPerSecond(std::string &filepath)
     {
         int width = GetWidth();
 
@@ -82,6 +82,19 @@ class AudioMapper{
 
         // Equation: Ps = total width / total length
         return static_cast<double>(width) / songLength;
+    }
+
+    //equation : Tp = (L*Ps)*H
+    double GetTotalPixels(std::string &filepath){
+        double Length = (double)GetLength(filepath);
+        double width  = (double)GetWidth();
+        double height = (double)GetHeight();
+        if (Length <= 0.0 || width<=0 || height<= 0.0 )
+        {
+            std::cerr << "invalid" << std::endl;
+            return (double)EXIT_FAILURE;
+        }
+        return Length * height * width;
     }
 
 
