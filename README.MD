@@ -1,7 +1,11 @@
 compiling Equations:
 --------------------
-    g++ -c src/Equations.cpp -o Equations.o $(sdl2-config --cflags)
+    g++ -c src/Equations.cpp -o build/Equations.o $(sdl2-config --cflags)
         
-Compiling main :
+Compiling app :
 ----------------
-    g++ Main.cpp -o main
+    g++ -c app.cpp -o build/main.o $(sdl2-config --cflags)
+
+Linking them :
+--------------
+    g++ build/main.o build/Equations.o -o ATI $(sdl2-config --libs) -lSDL2_mixer
