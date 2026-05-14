@@ -1,6 +1,14 @@
 #include "Equations.hpp"
 #include <cmath>
 
+/*
+@author : Rothang Ralph Ralefaso
+@email : rrralefaso@outloook.com
+@github : github.com/RR-Ralefaso
+@date : 2026
+*/
+
+
 class AudioMapper{
 
 
