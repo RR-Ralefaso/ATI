@@ -2,8 +2,8 @@
 #include <cstdlib>
 #include "src/Equations.hpp" //the equations ima use
 using namespace ATI;
-#include <algorithm> // Required for std::transform
-#include <cctype>    // Required for std::tolower
+#include <algorithm> 
+#include <cctype>   
 
 /*
 @author : Rothang Ralph Ralefaso
@@ -56,11 +56,8 @@ int main()
 
     Audiomapper mapper;
 
-
-
-
     //executing commands to build the equations
-    const char *command = "g++ -c src/Equations.cpp -o build/Equations.o $(sdl2-config --cflags)";
+    const char *command = "g++ -c src/Equations.cpp -o build/Equations.o $(sdl2-config --cflags) -lfftw3";
     if(ExecuteCommands(command) == EXIT_FAILURE){
         std::cerr << "failed to create the object file\n" << std::endl;
         exit;
@@ -75,9 +72,10 @@ int main()
     std::string response;
     //taking in user inout with validation
     do{
-        std::cout << "   for Live input [L]\n   for uploading input [u]" << std::endl;
+        std::cout << "   for Live input [L]\n   for uploading input [U]" << std::endl;
         getline(std::cin, response);
-    } while (response.empty() || toLowerCase(response) != "l" || toLowerCase(response) != "u");
+        response = toLowerCase(response); 
+    } while (response.empty() || (response != "l" && response != "u"));
 
     /* TODO: create taking in the files based off the input*/
 
