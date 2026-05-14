@@ -1,0 +1,3 @@
+FFTW3
+SDL2
+SDL2 -mixer
