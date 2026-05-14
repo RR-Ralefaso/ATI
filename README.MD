@@ -1,6 +1,6 @@
 compiling Equations:
 --------------------
-    g++ main.cpp Equations.cpp -o Equations $(sdl2-config --cflags --libs) -lSDL2_mixer
+    g++ -c src/Equations.cpp -o Equations.o $(sdl2-config --cflags)
         
 Compiling main :
 ----------------
