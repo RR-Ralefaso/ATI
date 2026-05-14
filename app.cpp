@@ -34,6 +34,9 @@ int ExecuteCommands(const char *command)
 }
 
 
+
+
+
 //tolowercase function
 std::string toLowerCase(std::string data)
 {
@@ -42,6 +45,8 @@ std::string toLowerCase(std::string data)
                    { return std::tolower(c); });
     return data;
 }
+
+
 
 int main()
 {
@@ -77,8 +82,15 @@ int main()
         response = toLowerCase(response); 
     } while (response.empty() || (response != "l" && response != "u"));
 
-    /* TODO: create taking in the files based off the input*/
     
+
+
+
+
+
+
+    
+
 
     return EXIT_SUCCESS;
 }
