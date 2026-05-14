@@ -6,6 +6,13 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 
+/*
+@author : Rothang Ralph Ralefaso
+@email : rrralefaso@outloook.com
+@github : github.com/RR-Ralefaso
+@date : 2026
+*/
+
 namespace ATI{
     class Audiomapper{
 
