@@ -4,8 +4,8 @@ compiling Equations:
         
 Compiling app :
 ----------------
-    g++ -c app.cpp -o build/main.o $(sdl2-config --cflags)
+    g++ -c app.cpp -o build/app.o $(sdl2-config --cflags)
 
 Linking them :
 --------------
-    g++ build/main.o build/Equations.o -o ATI $(sdl2-config --libs) -lSDL2_mixer
+    g++ build/app.o build/Equations.o -o ATI $(sdl2-config --libs) -lSDL2_mixer
