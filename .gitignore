@@ -3,5 +3,6 @@
 
 #files to ingnore
 *.o
+app
 
 
