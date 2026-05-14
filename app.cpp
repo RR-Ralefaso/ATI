@@ -2,8 +2,8 @@
 #include <cstdlib>
 #include "src/Equations.hpp" //the equations ima use
 using namespace ATI;
-
-
+#include <algorithm> // Required for std::transform
+#include <cctype>    // Required for std::tolower
 
 /*
 @author : Rothang Ralph Ralefaso
@@ -13,6 +13,35 @@ using namespace ATI;
 
 */
 
+
+//executing commands function
+int ExecuteCommands(const char *command)
+{
+    std::cout << "Executing Command... \n"
+              << std::endl;
+    int returnCode = std::system(command);
+
+    if (returnCode == 0)
+    {
+        std::cout << "Command executed successfully." << std::endl;
+        return EXIT_SUCCESS;
+    }
+    else
+    {
+        std::cerr << "Command failed with code: " << returnCode << std::endl;
+        return EXIT_FAILURE;
+    }
+}
+
+
+//tolowercase function
+std::string toLowerCase(std::string data)
+{
+    std::transform(data.begin(), data.end(), data.begin(),
+                   [](unsigned char c)
+                   { return std::tolower(c); });
+    return data;
+}
 
 int main()
 {
@@ -28,6 +57,19 @@ int main()
     Audiomapper mapper;
 
 
+
+
+    //executing commands to build the equations
+    const char *command = "g++ -c src/Equations.cpp -o build/Equations.o $(sdl2-config --cflags)";
+    if(ExecuteCommands(command) == EXIT_FAILURE){
+        std::cerr << "failed to create the object file\n" << std::endl;
+        exit;
+    }
+    std::cout << "created build file successfully\n"
+              << std::endl;
+
+
+
     // starting off by asking user if they want live audio or not
     std::cout << "would you like to upload a file or live recording:\n"<< std::endl;
     std::string response;
@@ -35,10 +77,10 @@ int main()
     do{
         std::cout << "   for Live input [L]\n   for uploading input [u]" << std::endl;
         getline(std::cin, response);
-    } while (response.empty());
+    } while (response.empty() || toLowerCase(response) != "l" || toLowerCase(response) != "u");
 
-    // TODO: create taking in the files based off the input
-    
+    /* TODO: create taking in the files based off the input*/
+
 
     return EXIT_SUCCESS;
 }
