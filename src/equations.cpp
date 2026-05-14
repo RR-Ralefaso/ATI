@@ -8,7 +8,9 @@
 #include "Equations.hpp"
 #include <cmath>
 #include <fstream>
-#include <algorithm>
+
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 
 namespace ATI
 {
@@ -53,12 +55,6 @@ namespace ATI
         return duration;
     }
 
-    double Audiomapper::GetPixelsPerSecond(const std::string &filepath)
-    {
-        double len = GetLength(filepath);
-        return (len > 0) ? static_cast<double>(GetWidth()) / len : 0.0;
-    }
-
     std::vector<Audiomapper::FrequencyPoint> Audiomapper::GetFrequencyMap(const std::string &filepath)
     {
         std::vector<FrequencyPoint> freqMap;
@@ -74,7 +70,7 @@ namespace ATI
         double sampleRate = wavSpec.freq;
 
         const int N = 2048;
-        const int HOP_SIZE = 1024;
+        const int HOP_SIZE = 512; // Increased overlap for more detail
         double *in = (double *)fftw_malloc(sizeof(double) * N);
         fftw_complex *out = (fftw_complex *)fftw_malloc(sizeof(fftw_complex) * N);
         fftw_plan p = fftw_plan_dft_r2c_1d(N, in, out, FFTW_ESTIMATE);
@@ -84,17 +80,17 @@ namespace ATI
             double currentTime = i / sampleRate;
             for (int j = 0; j < N; j++)
             {
-                // Apply Hann Window
+                // Hann Window to reduce noise
                 double window = 0.5 * (1.0 - cos(2.0 * M_PI * j / (N - 1)));
                 in[j] = (samples[i + j] / 32768.0) * window;
             }
-
             fftw_execute(p);
 
             for (int k = 0; k < N / 2; k++)
             {
                 float mag = std::sqrt(out[k][0] * out[k][0] + out[k][1] * out[k][1]);
-                if (mag > 0.02f)
+                // Lower threshold to capture more quiet frequencies
+                if (mag > 0.005f)
                 {
                     freqMap.push_back({currentTime, (int)(k * sampleRate / N), mag});
                 }
@@ -108,22 +104,17 @@ namespace ATI
         return freqMap;
     }
 
-    void Audiomapper::CreateSpectrogram(const std::vector<FrequencyPoint> &freqMap, int imgWidth, int imgHeight, const std::string &outputFilename)
+    void Audiomapper::CreateSpectrogramPNG(const std::vector<FrequencyPoint> &freqMap, int imgWidth, int imgHeight, const std::string &outputFilename)
     {
         if (freqMap.empty())
             return;
 
         std::vector<uint8_t> buffer(imgWidth * imgHeight * 3, 0);
-        double maxTime = 0, maxFreq = 10000.0;
-        float maxMag = 0;
+        double maxTime = 0, maxFreq = 8000.0; // Zooming into the audible range
 
         for (const auto &pt : freqMap)
-        {
             if (pt.timestamp > maxTime)
                 maxTime = pt.timestamp;
-            if (pt.magnitude > maxMag)
-                maxMag = pt.magnitude;
-        }
 
         for (const auto &pt : freqMap)
         {
@@ -132,19 +123,21 @@ namespace ATI
 
             if (x >= 0 && x < imgWidth && y >= 0 && y < imgHeight)
             {
-                uint8_t intensity = (uint8_t)((pt.magnitude / maxMag) * 255);
+                // Logarithmic intensity (dB scaling)
+                float db = 20.0f * std::log10(pt.magnitude + 1e-6f);
+                int normalized = static_cast<int>((db + 60.0f) * (255.0f / 60.0f));
+                uint8_t v = std::clamp(normalized, 0, 255);
+
                 int pos = (y * imgWidth + x) * 3;
-                // Grayscale with a blue tint
-                buffer[pos] = intensity / 2;
-                buffer[pos + 1] = intensity;
-                buffer[pos + 2] = intensity;
+
+                // "Inferno" Palette (Black -> Blue -> Red -> Yellow -> White)
+                buffer[pos] = std::clamp(v * 2, 0, 255);           // Red channel
+                buffer[pos + 1] = std::clamp(v - 50, 0, 255);      // Green channel
+                buffer[pos + 2] = std::clamp(255 - v * 2, 0, 255); // Blue channel
             }
         }
 
-        std::ofstream outFile(outputFilename, std::ios::binary);
-        outFile << "P6\n"
-                << imgWidth << " " << imgHeight << "\n255\n";
-        outFile.write((char *)buffer.data(), buffer.size());
+        stbi_write_png(outputFilename.c_str(), imgWidth, imgHeight, 3, buffer.data(), imgWidth * 3);
     }
 
 } // namespace ATI

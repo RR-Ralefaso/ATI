@@ -11,6 +11,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <fftw3.h>
@@ -34,10 +35,9 @@ namespace ATI
         int GetWidth();
         int GetHeight();
         double GetLength(const std::string &filepath);
-        double GetPixelsPerSecond(const std::string &filepath);
 
         std::vector<FrequencyPoint> GetFrequencyMap(const std::string &filepath);
-        void CreateSpectrogram(const std::vector<FrequencyPoint> &freqMap, int imgWidth, int imgHeight, const std::string &outputFilename);
+        void CreateSpectrogramPNG(const std::vector<FrequencyPoint> &freqMap, int imgWidth, int imgHeight, const std::string &outputFilename);
 
     private:
         bool sdlInitialized;

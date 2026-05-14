@@ -7,48 +7,38 @@
 
 #include <iostream>
 #include <string>
-#include <algorithm>
 #include "src/Equations.hpp"
 
 int main()
 {
     ATI::Audiomapper mapper;
-    std::string response;
+    std::string filepath, savepath;
 
-    std::cout << "--- Audio To Image Mapper ---\n";
+    std::cout << "--- Professional Audio-to-PNG Engine ---\n";
     std::cout << "Author: Rothang Ralph Ralefaso\n\n";
 
-    std::cout << "Would you like to upload a file [U] or live recording [L]? ";
-    std::getline(std::cin, response);
+    std::cout << "Enter path to WAV file: ";
+    std::getline(std::cin, filepath);
 
-    if (!response.empty() && std::tolower(response[0]) == 'u')
+    std::cout << "Performing Fast Fourier Transform (FFT)...\n";
+    auto freqData = mapper.GetFrequencyMap(filepath);
+
+    if (freqData.empty())
     {
-        std::string filepath, savepath;
-        std::cout << "Enter .wav file path: ";
-        std::getline(std::cin, filepath);
-
-        std::cout << "Processing frequency map...\n";
-        auto Fm = mapper.GetFrequencyMap(filepath);
-
-        if (Fm.empty())
-        {
-            std::cerr << "Error: Could not process audio file.\n";
-            return 1;
-        }
-
-        int w = mapper.GetWidth();
-        int h = mapper.GetHeight();
-
-        std::cout << "Enter save path (e.g., result.ppm): ";
-        std::getline(std::cin, savepath);
-
-        mapper.CreateSpectrogram(Fm, w, h, savepath);
-        std::cout << "Spectrogram successfully created at " << w << "x" << h << ".\n";
+        std::cerr << "Error: File could not be processed. Ensure it is a valid WAV.\n";
+        return 1;
     }
-    else
-    {
-        std::cout << "Live mode is currently under development.\n";
-    }
+
+    int w = mapper.GetWidth();
+    int h = mapper.GetHeight();
+
+    std::cout << "Enter output filename (e.g., viz.png): ";
+    std::getline(std::cin, savepath);
+
+    std::cout << "Generating high-detail spectrogram...\n";
+    mapper.CreateSpectrogramPNG(freqData, w, h, savepath);
+
+    std::cout << "Done! Saved to " << savepath << " at " << w << "x" << h << "\n";
 
     return 0;
 }
