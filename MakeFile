@@ -1,5 +1,5 @@
 # Author: Rothang Ralph Ralefaso
-# Location: /media/unusualralph/linus/ATI/Makefile
+# Location: ATI/Makefile
 
 BUILD_DIR = build
 EXE = ati_app
