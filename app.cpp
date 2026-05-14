@@ -16,6 +16,18 @@ int main()
 
     Audiomapper mapper;
 
+    // executing the equations files to use it
+    const char *command = "g++ -c src/Equations.cpp -o Equations`sdl2-config --cflags` -lSDL2 -lSDL2_mixer";
+    int status = std::system(command);
+    if (status == 0)
+    {
+        std::cout << "Successfully compiled to the parent folder!" << std::endl;
+    }
+    else
+    {
+        std::cerr << "Compilation failed." << std::endl;
+    }
+
     // starting off by asking user if they want live audio or not
     std::cout << "would you like to upload a file or live recording:\n"<< std::endl;
     std::string response;
@@ -24,6 +36,9 @@ int main()
         std::cout << "   for Live input [L]\n   for uploading input [u]" << std::endl;
         getline(std::cin, response);
     } while (response.empty());
+
+    // TODO: create taking in the files based off the input
+    
 
     return EXIT_SUCCESS;
 }
