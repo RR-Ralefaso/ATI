@@ -85,12 +85,30 @@ int main()
     
 
 
+    /*==============================actual logic================================*/
 
+    std::string filepath;
 
+    switch (response[0])
+    {
+        case 'l':
+                break;
 
+        case 'u':
+        //get file location ensure it isnt empty
+            do
+            {
+                std::cout << "\n\nwhat is the location of the audio file (use absolute path)\n"
+                          << std::endl;
+                getline(std::cin, filepath);
+            } while (filepath.empty());
+            mapper.filepath = filepath;
+            
 
-    
-
+            break;
+        default :
+            exit;
+    }
 
     return EXIT_SUCCESS;
 }
