@@ -1,6 +1,6 @@
 run(linux):
 ---
-    sudo apt update
+    sudo apt update && sudo apt install -y libsdl2-dev libsdl2-mixer-dev libfftw3-dev cmake build-essential
     make run
 
 compile without running :
