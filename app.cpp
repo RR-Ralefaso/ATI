@@ -14,7 +14,7 @@ int main()
     ATI::Audiomapper mapper;
     std::string filepath, savepath;
 
-    std::cout << "--- Professional Audio-to-PNG Engine ---\n";
+    std::cout << "--- Professional Audio-to-image (ATI) Engine ---\n";
     std::cout << "Author: Rothang Ralph Ralefaso\n\n";
 
     std::cout << "Enter path to WAV file: ";
