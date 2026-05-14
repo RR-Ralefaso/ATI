@@ -1,5 +1,6 @@
 #include "Equations.hpp"
 #include <cmath>
+#include <fstream>
 
 /*
 @author : Rothang Ralph Ralefaso
@@ -208,6 +209,63 @@ class AudioMapper{
         SDL_FreeWAV(wavBuffer);
 
         return freqMap;
+    }
+
+    void CreateSpectrogram(const std::vector<FrequencyPoint> &freqMap, int imgWidth, int imgHeight, const std::string &outputFilename)
+    {
+        if (freqMap.empty())
+            return;
+
+        // 1. Find the bounds of our data to scale it to the image size
+        double maxTime = 0, maxFreq = 0;
+        float maxMag = 0;
+        for (const auto &pt : freqMap)
+        {
+            if (pt.timestamp > maxTime)
+                maxTime = pt.timestamp;
+            if (pt.frequency > maxFreq)
+                maxFreq = pt.frequency;
+            if (pt.magnitude > maxMag)
+                maxMag = pt.magnitude;
+        }
+
+        // 2. Create a 1D buffer representing our 2D image (initialized to black)
+        // We store 3 bytes per pixel (RGB)
+        std::vector<uint8_t> buffer(imgWidth * imgHeight * 3, 0);
+
+        // 3. Map FrequencyPoints to Pixels
+        for (const auto &pt : freqMap)
+        {
+            // Map Time to X-axis (0 to imgWidth)
+            int x = static_cast<int>((pt.timestamp / maxTime) * (imgWidth - 1));
+
+            // Map Frequency to Y-axis (0 to imgHeight)
+            // Note: We subtract from (imgHeight - 1) because image (0,0) is top-left,
+            // but low frequencies should be at the bottom.
+            int y = (imgHeight - 1) - static_cast<int>((pt.frequency / maxFreq) * (imgHeight - 1));
+
+            // Ensure we are within bounds
+            if (x >= 0 && x < imgWidth && y >= 0 && y < imgHeight)
+            {
+                // Calculate pixel intensity based on magnitude (normalized 0-255)
+                uint8_t intensity = static_cast<uint8_t>((pt.magnitude / maxMag) * 255);
+
+                int pixelPos = (y * imgWidth + x) * 3;
+
+                // Heatmap logic: Red for high magnitude, Green/Blue for low
+                // Or just grayscale for simplicity:
+                buffer[pixelPos] = intensity;     // R
+                buffer[pixelPos + 1] = intensity; // G
+                buffer[pixelPos + 2] = intensity; // B
+            }
+        }
+
+        // 4. Write to PPM File
+        std::ofstream outFile(outputFilename, std::ios::binary);
+        outFile << "P6\n"
+                << imgWidth << " " << imgHeight << "\n255\n";
+        outFile.write(reinterpret_cast<char *>(buffer.data()), buffer.size());
+        outFile.close();
     }
 
 }; //end of class (helps with brackets)
