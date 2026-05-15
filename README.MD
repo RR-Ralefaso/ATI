@@ -1,3 +1,7 @@
+AUDIO TO IMAGE GENERATION (ATI)
+-------------------------------
+    takes in a wave file and creates an image using the frequencies from  the audio file
+
 run(linux):
 ---
     sudo apt update && sudo apt install -y libsdl2-dev libsdl2-mixer-dev libfftw3-dev cmake build-essential
